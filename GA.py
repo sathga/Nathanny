@@ -276,7 +276,7 @@ for row in range(0, df_trips.shape[0]):
 num_nodes = G.number_of_nodes()
 no = sorted(G.nodes())
 num_chargers = 2
-veh_range = 80
+veh_range = 40
 num_trips = len(T)
 max_trip_length = 100
 
