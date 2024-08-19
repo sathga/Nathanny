@@ -8,8 +8,6 @@ import os
 from numba import jit, cuda
 import numpy as np
 
-@jit(target_backend='cuda')
-
 class Trip(object):
     
     # Defining class variable
@@ -311,6 +309,8 @@ for i in range(pop_size):
 
 # Keeps record of fittest chromosomes
 fittest = []
+
+@jit(target_backend='cuda')
 
 # Continues until the final generation is met
 while not solution_found:
