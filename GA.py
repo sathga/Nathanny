@@ -290,7 +290,7 @@ unserviced_num = num_trips*max_trip_length
 max_itr = 10
 
 # Sets number of chromosomes in population
-pop_size = 10
+pop_size = 100
 
 # Creates first generation
 generation = 1
