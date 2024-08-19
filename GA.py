@@ -11,14 +11,14 @@ import numpy as np
 class Trip(object):
     
     # Defining class variable
-    @jit
+   
     def __init__(self, Trip):
         self.Trip = Trip
         self.origin = Trip[0]
         self.dest = Trip[1]
     
     # Determines the shortest trip between the origin and destination without considering range of vehicle
-    @jit
+    
     def shortest_theoretical_trip(self, G):
         unserviced_trip = {}
 
@@ -28,7 +28,7 @@ class Trip(object):
         return unserviced_trip
     
     # Determines the shortest trip between the origin and destination considering range of vehicle & ev charger locations
-    @jit
+    
     def shortest_serviced_trip(self, G, ev_chargers, veh_range):
         
         # Finds the shortest theoretical trip
@@ -82,7 +82,7 @@ class Trip(object):
 class Chromosome(object):
 
     # Defining class variable
-    @jit
+    
     def __init__(self, chromosome, num_node, num_charger):
         self.chromosome = chromosome
         self.nodes = num_node
@@ -90,7 +90,7 @@ class Chromosome(object):
 
     # Generates a new chromosome
     
-    @jit
+    
     def create_new(self, num_node, num_charger):
 
         new_chromosome = [1] * num_charger + [0] * (num_node-num_charger)
@@ -98,7 +98,7 @@ class Chromosome(object):
         random.shuffle(new_chromosome)
 
         return self(new_chromosome, num_node, num_charger)
-    @jit
+    
     def create_mutant(self, charger_loc):
 
         new_chromosome = [0] * self.nodes
@@ -108,7 +108,7 @@ class Chromosome(object):
         return Chromosome(new_chromosome, self.nodes, self.chargers)
     
     # Replaces duplicate EV charger locations
-    @jit
+    
     def replace_duplicates(self, lst):
 
         seen = set()
