@@ -5,6 +5,10 @@ import osmnx as ox
 import pandas as pd
 import ast
 import os
+from numba import jit, cuda
+import numpy as np
+
+@jit(target_backend='cuda')
 
 class Trip(object):
     
