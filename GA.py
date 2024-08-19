@@ -228,7 +228,7 @@ ox.plot_graph(G, node_size = .1, node_color = '#FFFFFF', edge_color='#000000', b
 path = os.getcwd()
 file = "Pongakawa_Census_Trip_Data_2024-08-19_10.36.csv"
 
-df_trips_coor = pd.read_csv(path+'\\'+file)
+df_trips_coor = pd.read_csv(path+'/'+file)
 
 # Initialising key lists
 nodes_lat = []
