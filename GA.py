@@ -7,7 +7,7 @@ import ast
 import os
 from numba import jit, cuda
 import numpy as np
-
+@jit
 class Trip(object):
     
     # Defining class variable
@@ -75,7 +75,7 @@ class Trip(object):
             #serviced_trip['Path'] = path_to + path_from[1:]              
 
         return serviced_trip
-    
+@jit
 class Chromosome(object):
 
     # Defining class variable
