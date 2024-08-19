@@ -213,6 +213,77 @@ def print_graph(G, ev_locs):
 
     # Ploting graph using OSMnx
     ox.plot_graph(G, node_color = node_colors, node_size = node_sizes, edge_color='#000000', bgcolor = '#F8F8FF', edge_linewidth=0.5)
+@jit(target_backend='cuda')
+def func1 ():
+# Sets number of chromosomes in population
+    pop_size = 100
+    
+    # Creates first generation
+    generation = 1
+    
+    # Initialises population
+    population = []
+    
+    # Initialising while loop condition
+    solution_found = False
+    
+    # Creates initial population
+    for i in range(pop_size):
+        population.append(Chromosome.create_new(num_nodes, num_chargers))
+    
+    # Keeps record of fittest chromosomes
+    fittest = []
+    
+    
+    
+    # Continues until the final generation is met
+    while not solution_found:
+    
+        # Sorts chromosome by fitness score
+        population = sorted(population, key = lambda x:x.fitness(G, T, veh_range))
+    
+        # Checks if fittest chromosome fulfills requirement
+        if population[0].fitness(G, T, veh_range) <= int(max_unserved*num_trips+1)*unserviced_num:
+            solution_found = True
+            print(f"A total of {round(((population[0].fitness(G, T, veh_range))//unserviced_num)/num_trips*100, 2)}% of trips are not possible which is below the requirement of {max_unserved*num_trips}% of trips.""")
+            break
+        
+        new_generation = []
+    
+        # SELECTION: Top 15% fittest population is kept through elitism selection
+        x = int((15*pop_size)/100)
+        new_generation.extend(population[:x])
+    
+        # CROSSOVER & MUTATION: Top 50% undergoes crossover and mutation
+        x = int((85*pop_size)/100)
+        for _ in range(x):
+            first_parent = random.choice(population[:50])
+            second_parent = random.choice(population[:50])
+            child = first_parent.crossover(second_parent)
+            child = child.mutate()
+            new_generation.append(child)
+    
+        # Creates new generation
+        population = new_generation
+    
+        # Displays the fittest chromosome in the population in that generation
+        print("Generation Number: {}\tSolution: {}\tFitness Score: {}".format(generation,population[0].locate_chargers(),population[0].fitness(G, T, veh_range)))
+    
+        # Adds fittest chromosome to the list
+        fittest.append(population[0].locate_chargers())
+    
+        # If fittest chromosome has appeared more than 3 times, end algorithm
+        if fittest.count(population[0].locate_chargers()) > max_itr:
+            solution_found = True
+            print(f"""The best solution was found given the max iteration limit of {max_itr}. A total of {round(((population[0].fitness(G, T, veh_range))//unserviced_num)/num_trips*100, 2)}"""
+                  """% of trips are not possible.""")
+            break
+    
+        # Next generation
+        generation += 1
+
+
+
 
 # Creates/Imports Graph
 bbox = -37.6, -38.09, 176.7, 176.08
@@ -291,73 +362,9 @@ unserviced_num = num_trips*max_trip_length
 # Number of generation iterations with same top chromosome
 max_itr = 10
 
-# Sets number of chromosomes in population
-pop_size = 100
 
-# Creates first generation
-generation = 1
 
-# Initialises population
-population = []
-
-# Initialising while loop condition
-solution_found = False
-
-# Creates initial population
-for i in range(pop_size):
-    population.append(Chromosome.create_new(num_nodes, num_chargers))
-
-# Keeps record of fittest chromosomes
-fittest = []
-
-@jit(target_backend='cuda')
-
-# Continues until the final generation is met
-while not solution_found:
-
-    # Sorts chromosome by fitness score
-    population = sorted(population, key = lambda x:x.fitness(G, T, veh_range))
-
-    # Checks if fittest chromosome fulfills requirement
-    if population[0].fitness(G, T, veh_range) <= int(max_unserved*num_trips+1)*unserviced_num:
-        solution_found = True
-        print(f"A total of {round(((population[0].fitness(G, T, veh_range))//unserviced_num)/num_trips*100, 2)}% of trips are not possible which is below the requirement of {max_unserved*num_trips}% of trips.""")
-        break
-    
-    new_generation = []
-
-    # SELECTION: Top 15% fittest population is kept through elitism selection
-    x = int((15*pop_size)/100)
-    new_generation.extend(population[:x])
-
-    # CROSSOVER & MUTATION: Top 50% undergoes crossover and mutation
-    x = int((85*pop_size)/100)
-    for _ in range(x):
-        first_parent = random.choice(population[:50])
-        second_parent = random.choice(population[:50])
-        child = first_parent.crossover(second_parent)
-        child = child.mutate()
-        new_generation.append(child)
-
-    # Creates new generation
-    population = new_generation
-
-    # Displays the fittest chromosome in the population in that generation
-    print("Generation Number: {}\tSolution: {}\tFitness Score: {}".format(generation,population[0].locate_chargers(),population[0].fitness(G, T, veh_range)))
-
-    # Adds fittest chromosome to the list
-    fittest.append(population[0].locate_chargers())
-
-    # If fittest chromosome has appeared more than 3 times, end algorithm
-    if fittest.count(population[0].locate_chargers()) > max_itr:
-        solution_found = True
-        print(f"""The best solution was found given the max iteration limit of {max_itr}. A total of {round(((population[0].fitness(G, T, veh_range))//unserviced_num)/num_trips*100, 2)}"""
-              """% of trips are not possible.""")
-        break
-
-    # Next generation
-    generation += 1
-
+func1()
 # printing the fittest chromosome in last generation along with the fittness score
 print("Final Generation Number: {}\tSolution: {}\tFitness Score: {}".format(generation,population[0].locate_chargers(),population[0].fitness(G, T, veh_range)))
 print_graph(G, population[0].locate_chargers())
