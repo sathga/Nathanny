@@ -5,8 +5,6 @@ import osmnx as ox
 import pandas as pd
 import ast
 import os
-from numba import jit, cuda
-import numpy as np
 
 class Trip(object):
     
@@ -220,7 +218,7 @@ def print_graph(G, ev_locs):
     # Ploting graph using OSMnx
     ox.plot_graph(G, node_color = node_colors, node_size = node_sizes, edge_color='#000000', bgcolor = '#F8F8FF', edge_linewidth=0.5)
     
-@jit
+
 def func1 ():
 # Sets number of chromosomes in population
     pop_size = 100
